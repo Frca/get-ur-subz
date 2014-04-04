@@ -1,44 +1,30 @@
-var lastHash = "";
+var lastParameter = "";
 var autocompleteData = null;
 var showsData = null;
 
 $(function(){
-    $(window).on('hashchange', loadHashToBlock);
     $("#input-only-english")
         .on('change', toggleLanguage )
         .prop('checked', $.cookie("only-english"));
 
-    if (window.location.hash)
+    $("#input-reverse-order")
+        .on('change', toggleOrder )
+        .prop('checked', $.cookie("reverse-order"));
+
+    $( document )
+        .on("click", "#season tr", downloadClickListener )
+        .on('click', '#navigatorBlock a, #seasonSelector a', pushbackLinkListener);
+
+    if (getUrlParameter())
         loadHashToBlock();
 
-    $( document ).on("click", "#season tr", clicker );
-    $("#addShowInput").autocomplete({
-        source: function(request, response) {
-            getAutocompleteData(function() {
-                response( $.ui.autocomplete.filter(autocompleteData, request.term ) );
-            });
-        },
-        minLength: 2,
-        focus: function( event, ui ) {
-            return false;
-        },
-        select: function( event, ui ) {
-            $( "#addShowInput" ).val( ui.item.label );
-            addTVShow(ui.item.value, ui.item.label )
-            return false;
-        }
-    })
-    .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
-        return $( "<li>" )
-            .append( "<a>" + item.label + "</a>" )
-            .appendTo( ul );
-    };
+    addShowAutocompleteListener($("#addShowInput"));
 
     loadShows();
 });
 
 function loadHashToBlock() {
-    if (!window.location.hash)
+    if (!getUrlParameter())
         return;
 
     var subBlock = $("#subtitleBlock");
@@ -57,7 +43,7 @@ function loadHashToBlock() {
         }
     });
 
-    if (!lastHash || getShowId(lastHash) != getShowId()) {
+    if (!lastParameter || getShowId(lastParameter) != getShowId()) {
         $("#seasonBlock").removeClass("hidden");
         var seasonSelector = $("#seasonSelector");
         seasonSelector.setLoading(true, 75);
@@ -86,18 +72,29 @@ function loadHashToBlock() {
         $(this).addClass("selected");
     }
 
-    lastHash = window.location.hash;
+    lastParameter = getUrlParameter();
     addCurrentToCookie();
 }
 
 function toggleLanguage() {
     if ($(this).is(":checked")) {
         $("#subtitleBlock").addClass("only-english");
-        $.cookie("only-english", true, { expires: 30 });
+        $.cookie("only-english", true, { expires: 30, path: basePath});
     }
     else {
         $("#subtitleBlock").removeClass("only-english");
         $.removeCookie("only-english");
+    }
+
+    loadHashToBlock();
+}
+
+function toggleOrder() {
+    if ($(this).is(":checked")) {
+        $.cookie("reverse-order", true, { expires: 30, path: basePath });
+    }
+    else {
+        $.removeCookie("reverse-order");
     }
 
     loadHashToBlock();
@@ -111,6 +108,9 @@ function updateSubtitles(data) {
     var lastEpisode = -1;
     var table = $("#season > table");
     table.addClass("table table-striped");
+    if ($("#input-reverse-order").is(":checked"))
+        table.find("tbody").reverseOrder();
+
     table.find("tr[height]").remove();
     table.find("tr:visible").each(function() {
         $(this).find("td:nth-child(3) > a").contents().unwrap();
@@ -130,15 +130,22 @@ function updateSubtitles(data) {
 function updateSidebar(seasons) {
     var selector = $("#seasonSelector");
     selector.setLoading(false);
+
     seasons.forEach(function(val) {
-        var hash = '#' + getShowId() + '_' + val;
+        var link = basePath + '/' + getShowId() + '/' + val;
         var cls =  getSeason() == val ? ' class="selected"' : '';
-        selector.append('<li' + cls + '><a href="' + hash + '">' + val + '</a></li>');
+        selector.append('<li' + cls + '><a href="' + link + '">' + val + '</a></li>');
     });
 }
 
-function clicker() {
+function downloadClickListener() {
     downloadURL($(this).data("href"));
+}
+
+function pushbackLinkListener() {
+    window.history.pushState("", "", $(this).attr("href"));
+    loadHashToBlock();
+    return false;
 }
 
 function downloadURL(url) {
@@ -153,25 +160,24 @@ function downloadURL(url) {
     iframe.src = url;
 };
 
-function getShowId(hash) {
-    if (!hash)
-        hash = window.location.hash;
-
-    var start = hash.charAt(0) == '#' ? 1 : 0;
-    var idx = hash.indexOf("_");
-    if (idx != -1)
-        return hash.substr(start, idx - start);
-    else
-        return hash.substr(start);
+function getUrlParameter() {
+    return window.location.pathname.replace(basePath + '/', "");
 }
 
-function getSeason(hash) {
-    if (!hash)
-        hash = window.location.hash;
+function getShowId(parameter) {
+    if (!parameter)
+        parameter = getUrlParameter();
 
-    var idx = hash.indexOf("_");
-    if (idx != -1)
-        return hash.substr(idx+1);
+    return parameter.split('/')[0];
+}
+
+function getSeason(parameter) {
+    if (!parameter)
+        parameter = getUrlParameter();
+
+    var arr = parameter.split("/");
+    if (arr.length >= 2)
+        return arr[1];
     else
         return 1;
 }
@@ -192,6 +198,30 @@ function getShowName(full) {
     }
 
     return result;
+}
+
+function addShowAutocompleteListener(object) {
+    object.autocomplete({
+        source: function(request, response) {
+            getAutocompleteData(function() {
+                response( $.ui.autocomplete.filter(autocompleteData, request.term ) );
+            });
+        },
+        minLength: 2,
+        focus: function( event, ui ) {
+            return false;
+        },
+        select: function( event, ui ) {
+            $( "#addShowInput" ).val( ui.item.label );
+            addTVShow(ui.item.value, ui.item.label )
+            return false;
+        }
+    })
+    .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+        return $( "<li>" )
+            .append( "<a>" + item.label + "</a>" )
+            .appendTo( ul );
+    };
 }
 
 function getAutocompleteData(callback) {
@@ -234,18 +264,18 @@ function loadShows(force) {
         navigator.setLoading(false);
         latestBlock.html('');
 
-        latestShows.forEach(function(value) {
+        latestShows.forEach(function() {
             $( "<li>").appendTo(latestBlock);
         });
 
         showsData.forEach(function(show) {
             $( "<li>" )
-                .append( '<a href="#' + show.value + '">' + show.label + '</a>' )
+                .append( '<a href="' + basePath + '/' + show.value + '">' + show.label + '</a>' )
                 .appendTo( navigator );
 
             var latestPos = indexOfShow(latestShows, show.value);
             if (latestPos != -1) {
-                $('<a href="#' + latestShows[latestPos] + '">S' + getSeason(latestShows[latestPos]) + ' | ' + show.label + '</a>').appendTo(latestBlock.children()[latestPos]);
+                $('<a href="' + basePath + '/' + latestShows[latestPos] + '">S' + getSeason(latestShows[latestPos]) + ' | ' + show.label + '</a>').appendTo(latestBlock.children()[latestPos]);
                 $("#additionalNavigator").removeClass("hidden");
             }
         });
@@ -279,9 +309,9 @@ function addCurrentToCookie() {
     if (existingIdIdx != -1)
         currentShows.splice(existingIdIdx, 1);
 
-    currentShows.unshift(getShowId() + "_" + getSeason());
+    currentShows.unshift(getShowId() + "/" + getSeason());
 
-    $.cookie("shows", currentShows);
+    $.cookie("shows", currentShows, { expires: 30, path: basePath });
     loadShows();
 }
 
@@ -296,7 +326,7 @@ function indexOfShow(array, show) {
     return -1;
 }
 
-jQuery.fn.extend({
+$.fn.extend({
     setLoading: function(start, height, text) {
         this.html('');
         if (start) {
@@ -318,5 +348,8 @@ jQuery.fn.extend({
         }
 
         return this;
+    },
+    reverseOrder: function() {
+        [].reverse.call(this.children()).appendTo(this);
     }
 });

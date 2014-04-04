@@ -11,6 +11,9 @@ common:
 		# zlib.output_compression: yes
 
 	nette:
+		session:
+			autoStart: false
+
 		application:
 			errorPresenter: Error
 
