@@ -1,0 +1,912 @@
+body, ul, ol {
+    margin: 0px;
+    padding: 0px;
+}
+
+body {
+    font-family: Arial;
+    font-size: 12px;
+}
+
+p {
+    word-wrap: break-word;
+}
+
+div#mainContainer {
+    box-shadow: 5px 0px 10px 0px #f6f6f6, -5px 0px 10px 0px #f6f6f6;
+    margin-top: -25px;
+    padding-top: 25px;
+}
+
+div#headerWrapper {
+    padding: 15px 15px 10px 15px;
+    height: 87px;
+    line-height: 87px;
+    border-bottom: 1px solid #7b7979;
+}
+
+div#headerContainer {
+    margin-top: auto;
+    margin-bottom: auto;
+    vertical-align: middle;
+}
+
+div#headerContainer #logo {
+    float: left;
+    display: block;
+    text-decoration: none;
+}
+
+div#headerContainer #logo h1 {
+    margin: 0px;
+}
+
+div#headerContainer ul#menu {
+    float: right;
+    margin: 0px;
+    padding: 0px;
+    list-style-type: none;
+}
+
+div#headerContainer ul#menu li {
+    display: inline;
+    padding: 0px;
+    margin: 0px 16px;
+}
+
+div#headerContainer ul#menu a {
+    /*font-family: 'helveticaneuewebfont';*/
+    font-family: "HelveticaNeue-Regular", "Helvetica Neue Regular", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    text-decoration: none;
+    color: black;
+}
+
+div#headerContainer ul#menu a.green { color: #7fb539; }
+
+div#headerContainer ul#menu a:hover {
+    text-decoration: underline;
+}
+
+div#headerContainer a:visited {
+    /*text-decoration: none;
+    color: purple;*/
+}
+div#headerContainer a:active {
+    /*text-decoration: none;
+    color: blue;*/
+}
+
+.clear {
+    clear: both;
+}
+
+/*div.separator {
+    background-color: #7b7979;
+    height: 1px;
+    width: 100%;
+}*/
+
+div#mainBlock {
+    min-height: 500px;
+}
+
+div#mainBlock > .content {
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 15px;
+}
+
+div#footerWrapper {
+    height: 280px;
+    border-top: 1px solid #7b7979;
+}
+
+div#footerContainer {
+    border-top: 1px solid #FFF;
+    vertical-align: middle;
+    padding-left: 20px;
+    padding-top: 67px;
+}
+
+div#footerContainer > img, div#footerContainer > ul {
+    float: left;
+}
+div#footerContainer ul {
+    list-style: none;
+}
+
+div#footerContainer > ul {
+    margin-top: 28px;
+}
+
+div#footerContainer > ul > li {
+    font-weight: bold;
+}
+
+div#footerContainer > ul > li > a {
+    text-decoration: none;
+}
+
+div#footerContainer > ul > li:hover > a {
+    text-decoration: underline;
+}
+div#footerContainer > ul > li.double {
+    padding-bottom: 1.2em;
+}
+
+div#footerContainer > img:first-of-type {
+    margin-left: 56px;
+}
+
+div#footerContainer > ul:first-of-type {
+    margin-left: 6px;
+    width: 200px;
+}
+
+div#footerContainer > img:last-of-type {
+    margin-left: 55px;
+    margin-top: 20px;
+}
+
+div#footerContainer > ul:last-of-type {
+    margin-left: 25px;
+}
+
+div#bannerWrapper {
+    border-top: 1px solid #7b7979;
+    border-bottom: 1px solid #7b7979;
+}
+
+div#banner {
+    padding-top: 29px;
+    padding-bottom: 32px;
+    font-family: "HelveticaNeue-Regular", "Helvetica Neue Regular", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    /*font-family: 'helveticaneuewebfont';*/
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #fff;
+    /*background-color: #fafafa;*/
+    background: url('../images/banner_bcg.png') repeat;
+}
+
+div#banner.no-padding {
+    padding: 0;
+    border: none;
+    height: 576px;
+}
+
+div#banner.no-padding > * {
+    margin: 0;
+    padding: 0;
+}
+
+div#banner h1 {
+    margin: 0px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+h1, h2, h3 {
+    font-family: "HelveticaNeue-Regular", "Helvetica Neue Regular", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    /*font-family: 'helveticaneuewebfont';*/
+    font-weight: bold;
+}
+
+h1 {
+    margin-top: 0.6em;
+    font-size: 51px;
+}
+
+h2 {
+    margin-top: 0.6em;
+    font-size: 30px;
+}
+
+h3 {
+    font-size: 15px;
+}
+
+ul.twoColumns, ul.threeColumns {
+    position: relative;
+    /*display: table;*/
+    width: 994px;
+    /*padding-left: 15px;*/
+    padding-right: 15px;
+    margin-top: 19px;
+    list-style: none;
+}
+
+ul.twoColumns:after, ul.threeColumns:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+}
+
+ul.twoColumns > li, ul.threeColumns > li {
+    float: left;
+    /*display: table-cell;*/
+    width: 485px;
+    position: relative;
+}
+
+ul.twoColumns > li {
+    width: 485px;
+}
+
+ul.threeColumns > li {
+    width: 315px;
+}
+
+ul.twoColumns > li:not(:first-child), ul.threeColumns > li:not(:first-child) {
+    padding-left: 12px;
+}
+
+ul.twoColumns > li:not(:last-child), ul.threeColumns > li:not(:last-child) {
+    padding-right: 12px;
+}
+
+ul.twoColumns h2, ul.threeColumns h2 {
+    margin-bottom: 23px;
+}
+
+.slightlyGrey {
+    background-color: #f9f9f9;
+}
+
+.header {
+    font-family: "HelveticaNeue-Regular", "Helvetica Neue Regular", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.center {
+    text-align: center;
+}
+
+input, textarea {
+    font-family: monospace;
+    outline-color: black;
+}
+
+div.separator {
+    width: 100%;
+    height: 1px;
+    background-color: black;
+}
+
+div.separator.white {
+    background-color: white;
+}
+
+div.separator.green {
+    background-color: #7FB539;
+}
+
+input[type=text], input[type=email], input[type=password], input[type=number], input[type=date], textarea {
+    width: 297px;
+    border: 1px solid #e9e9e9;
+    padding: 0px 2px;
+}
+
+input[type=text], input[type=email], input[type=password], input[type=number], input[type=date] {
+    height: 38px;
+}
+
+input[type=submit], button {
+    width: 142px;
+    height: 44px;
+    color: white;
+    font-family: "HelveticaNeue-Regular", "Helvetica Neue Regular", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    font-weight: bold;
+    font-size: 15px;
+    background: #231f20;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+input[type=checkbox] {
+    margin-right: 10px;
+}
+
+a {
+    color: black;
+    text-decoration: underline;
+}
+
+a:hover {
+
+}
+
+a:visited {
+
+}
+
+a:active {
+
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.paginator {
+    float: right;
+    margin-top: 36px;
+
+    margin-right: -2px;
+}
+
+.paginator a {
+    border: 1px solid #e6e7e8;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    padding-left: 12px;
+    padding-right: 11px;
+    text-decoration: none;
+    margin-left: 5px;
+}
+
+.paginator a.prev {
+    padding-left: 9px;
+    padding-right: 8px;
+}
+
+.paginator a.next {
+    padding-left: 21px;
+    padding-right: 21px;
+}
+
+.paginator a.selected {
+    background-color: #231f20;
+    color: #fff;
+}
+
+div.grid ul.items {
+    list-style: none;
+    margin-left: -14px;
+    margin-right: -15px;
+    margin-top: 2px;
+}
+
+div.grid  ul.items > li {
+    display: inline-block;
+    vertical-align: top;
+    margin: 2px 11px 32px 13px;
+    cursor: pointer;
+}
+
+div.grid ul.items > li > div:first-child {
+    border: 1px solid #e6e7e8;
+    background: #fff;
+    width: 226px;
+    height: 171px;
+    line-height: 171px;
+    text-align: center;
+}
+
+/*div.grid ul.items > li > div:first-child.selected {
+    border: 1px solid #7FB539;
+}
+
+div.grid ul.items > li > div:first-child.unselectable {
+    border: 1px solid #ed1c24;
+}*/
+
+div.grid ul.items > li > div:last-child:not(:only-child) > img:only-child {
+    position: relative;
+    top: -30px;
+    left: 15px;
+}
+
+div.grid ul.items > li > div:last-child {
+    margin-top: 8px;
+}
+
+div.grid ul.items > li > div:last-child > span:first-child {
+    float: left;
+    padding-left: 10px;
+}
+
+div.grid ul.items > li > div:last-child > span:last-child {
+    float: right;
+    padding-right: 10px;
+}
+
+div.grid ul.items img {
+    vertical-align: middle;
+}
+
+.hidden {
+    display: none;
+}
+
+.underline {
+    text-decoration: underline;
+}
+
+.black { color: #000000; }
+.red { color: #ed1c24; }
+.orange { color: #ff8000; }
+.green { color: #7fb539; }
+
+.arial {
+    font-family: Arial;
+}
+
+table.tableList {
+    /*margin-left: 14px;*/
+    margin-top: 14px;
+    border-collapse: separate;
+    border-spacing: 3px 3px;
+}
+
+table.tableList tr {
+    width: 900px;
+}
+
+table.tableList td, table.tableList th {
+    vertical-align: middle;
+}
+
+table.tableList th {
+    text-align: center;
+    font-family: "HelveticaNeue-Regular", "Helvetica Neue Regular", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    font-weight: bold;
+    font-size: 15px;
+    height: 74px;
+    padding: 0px;
+    padding-right: 12px;
+}
+
+table.tableList td.twoLine p.header {
+    margin: 0px;
+    margin-top: 12px;
+}
+
+table.tableList td.twoLine p:not([class]) {
+    margin-top: 9px;
+    margin-bottom: 5px;
+}
+
+table.tableList td.twoLine {
+    vertical-align: top;
+}
+
+table.tableList td:first-child {
+    padding-left: 18px;
+    padding-right: 16px;
+    width: 311px;
+    max-width: 311px;
+}
+table.tableList td:first-child.wide {
+    width: 500px;
+    max-width: 500px;
+}
+
+table.tableList td:not(:first-child).wide {
+    width: 300px;
+}
+
+table.tableList td {
+    height: 82px;
+    margin: 0px;
+    padding: 0px;
+    padding-bottom: 3px;
+    background-color: #f9f9f9;
+}
+
+table.tableList td:not(:first-child) {
+    width: 161px;
+    /*border-left: 1px solid white;*/
+    text-align: center;
+    height: 76px;
+    padding-top: 6px;
+}
+
+table.tableList td:not(:last-child) {
+    /*border-right: 1px solid #000;*/
+}
+
+/*table.tableList td:last-child {
+    text-align: right;
+    padding-right: 46px;
+    width: 114px;
+}*/
+
+div.slightlyGrey > form {
+    padding: 20px;
+}
+
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+ul.error {
+    list-style: none;
+    padding-left: 15px;
+    color: red;
+    padding-bottom: 20px;
+    font-weight: bold;
+}
+
+h1.flash.error {
+    display: none;
+}
+
+/*
+.flash {
+    padding: 0.5em;
+    margin: 1em 0;
+    text-align: center;
+    border-radius: 2px 2px 2px 2px;
+}
+
+.flash.error {
+    color: #cd0a0a;
+    background-color: #fef1ec;
+    border: #cd0a0a 1px solid;
+}
+
+.flash.info {
+    *color: #000000;
+    background-color: #f1fbe5;
+    border: #8cce3b 1px solid;
+}*/
+
+label.normal {
+    font-weight: normal;
+    font-size: 12px;
+    font-family: Arial;
+}
+
+.big {
+    font-size: 15px;
+}
+
+ul.gridList {
+    display: inline-block;
+    width: 994px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-top: 19px;
+}
+
+ul.gridList > li {
+    display: inline-block;
+    width: 485px;
+    vertical-align: top;
+}
+
+.pl15 {
+    padding-left: 15px;
+}
+
+.pl30 {
+    padding-left: 30px;
+}
+
+.pl45 {
+    padding-left: 45px;
+}
+
+.list-none {
+    list-style: none;
+}
+
+.list-disc {
+    list-style-type: disc;
+}
+
+.list-ua {
+    list-style: upper-alpha;
+}
+
+.list-dec {
+    list-style: decimal;
+}
+
+ol.list-bold > li {
+    font-weight: bold;
+}
+
+ol.list-bold > li > * {
+    font-weight: normal;
+}
+
+ol.list-bold-first > li {
+    font-weight: bold;
+}
+
+ol.list-bold-first > li > *:first-child {
+    font-weight: bold;
+}
+
+ol.list-bold-first > li > * {
+    font-weight: normal;
+}
+
+ol.list-large-first > li, ol.list-large-first > li > *:first-child {
+    font-family: "HelveticaNeue-Regular", "Helvetica Neue Regular", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    font-size: 15px;
+}
+
+ol.list-large-first > li > * {
+    font-family: Arial;
+    font-size: 12px;
+}
+
+.weight-normal {
+    font-weight: normal;
+}
+
+.small {
+
+}
+
+form > ul.error {
+    display: none !important;
+}
+
+a.no-underline {
+    text-decoration: none;
+}
+
+.div-block {
+    padding: 20px;
+}
+
+.pb10 {
+    padding-bottom: 10px;
+}
+
+.pb30 {
+    padding-bottom: 30px;
+}
+
+.ta-right {
+    text-align: right;
+}
+
+.bg-white {
+    background: white;
+}
+
+.dib {
+    display: inline-block;
+}
+
+.pe2b {
+    padding-bottom: 2em;
+}
+
+.padding-around {
+    padding: 10px;
+}
+
+.mt20 {
+    margin-top: 20px;
+}
+
+.mt3e {
+    margin-top: 3em;
+}
+
+.mt100 {
+    margin-top: 100px;
+}
+
+input.border-red, .border-red {
+    border-color: red;
+    outline-color: red;
+}
+
+input.border-orange, .border-orange {
+    border-color: orange;
+    outline-color: orange;
+}
+
+input.border-green, .border-green{
+    border-color: green;
+    outline-color: green;
+}
+
+ul.tableList {
+    text-decoration: none;
+}
+
+#subtitleBlock {
+    display: table;
+    width: 100%;
+}
+
+.subtitlePart {
+    display: table-cell;
+    vertical-align: top;
+}
+
+#navigatorBlock {
+    width: 25%;
+    border-right: solid 1px #f6f6f6;
+}
+
+.navigator {
+    list-style: none;
+}
+
+.navigator > li {
+    line-height: 250%;
+    padding-left: 15px;
+    cursor: pointer;
+}
+
+.navigator > li > a {
+    display: block;
+    border-bottom: 1px solid #f6f6f6;
+    margin-right: 15px;
+    color: black;
+}
+
+.navigator > li:last-child > a {
+    border-bottom: none;
+}
+
+.navigator > li > a:hover {
+    text-decoration: none;
+    /*border-bottom-color: ;*/
+}
+
+.navigator > li:hover {
+    background: #f6f6f6;
+}
+
+#listBlock {
+    width: auto;
+    padding: 0 20px;
+    line-height: 150%;
+    min-height: 250px;
+}
+
+#details {
+    width: 15%;
+    border-left: solid 1px #f6f6f6;
+    padding-left: 15px;
+}
+
+footer {
+    margin: 20px 0;
+}
+
+#listBlock tr > td[valign=top] {
+    display: none;
+}
+
+#listBlock tr > td[valign=top]:first-child {
+    display: table-cell;
+}
+
+#listBlock table {
+    width: 100%;
+}
+
+#listBlock #season th:first-child,
+#listBlock #season td:first-child,
+#listBlock #season th:last-child,
+#listBlock #season td:last-child,
+#listBlock #season th:nth-child(6),
+#listBlock #season td:nth-child(6),
+#listBlock #season th:nth-child(10),
+#listBlock #season td:nth-child(10),
+#subtitleBlock.only-english #listBlock #season table th:nth-child(4),
+#subtitleBlock.only-english #listBlock #season table td:nth-child(4),
+#listBlock #season tr[height="2"],
+#listBlock #season td[colspan]{
+    display: none;
+}
+
+#listBlock #season table th {
+    text-align: center;
+}
+
+#season tr:not(.duplicate) > td {
+   border-top: 3px solid #ddd;
+}
+
+#season tr.duplicate > td:nth-child(2),
+#season tr.duplicate > td:nth-child(3) {
+    overflow: hidden;
+    text-indent: -9999px;
+}
+
+#season tr {
+    cursor: pointer;
+}
+
+#season tr:hover > td {
+    background: #e3e3e3;
+}
+
+#seasonSelector {
+    list-style: none;
+}
+
+#seasonSelector.loading {
+    text-align: center;
+}
+
+#seasonSelector > li {
+    height: 38px;
+    width: 38px;
+    display: inline-block;
+    line-height: 38px;
+    margin: 5px;
+    box-shadow: 5px 0px 10px 0px #f6f6f6, -5px 0px 10px 0px #f6f6f6;
+    text-align: center;
+}
+
+#seasonSelector.loading > li {
+    box-shadow: none;
+}
+
+#seasonSelector > li > a {
+    display: block;
+    text-decoration: none;
+    color: #333;
+}
+
+#seasonSelector > li:hover,
+#seasonSelector > li.selected {
+    background: #e6e6e6;
+}
+
+#showAdder {
+    padding: 15px;
+}
+
+ul.ui-autocomplete {
+    background: #ffffff;
+}
+
+ul.ui-autocomplete > li.ui-menu-item {
+    border-bottom: 2px solid #ccc;
+    /*list-style: url('../images/add_icon.png') inside;*/
+    list-style: none;
+}
+
+ul.ui-autocomplete > li.ui-menu-item:last-child {
+    border-bottom: none;
+}
+
+#logo {
+    color: black;
+}
+
+.loader > div {
+    display: table;
+    width: 100%;
+    height: 100%;
+}
+
+.loader > div > div {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.loader > div > div > div {
+    font-weight: bold;
+    font-size: 1.2em;
+    padding-bottom: 15px;
+}

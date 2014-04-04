@@ -1,0 +1,41 @@
+{block #content}
+    <div id="subtitleBlock" data-src="{link data!}">
+        <div id="navigatorBlock" class="subtitlePart" >
+            <div id="additionalNavigator" class="hidden">
+                <h4>Latest Shows</h4>
+                <ul id="navigatorLatest" class="navigator"> </ul>
+
+                <hr/>
+
+                <h4>All shows</h4>
+            </div>
+
+            <ul id="navigatorMain" class="navigator" data-src="{link navigatorData!}"> </ul>
+
+            <hr/>
+
+            <div id="showAdder" data-src="{link addShow!}">
+                <input id="addShowInput" type="text" placeholder="Add new show" data-src="{link getAllShows!}"/>
+            </div>
+        </div>
+
+        <div id="listBlock" class="subtitlePart"> </div>
+
+        <div id="details" class="subtitlePart">
+            <h3>Language</h3>
+
+            <input type="checkbox" name="only-english" id="input-only-english"/>
+            <label for="input-only-english">Only english</label>
+
+            <div id="seasonBlock" class="hidden">
+                <hr/>
+
+                <h3>Season</h3>
+
+                <ul id="seasonSelector" data-src="{link getSeasonCount!}"> </ul>
+            </div>
+
+        </div>
+    </div>
+
+{/block}
