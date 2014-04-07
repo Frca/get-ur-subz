@@ -116,7 +116,7 @@ function updateSubtitles(data) {
         $(this).find("td:nth-child(3) > a").contents().unwrap();
         var link = $(this).find("td:nth-child(10) > a");
         if (link.length)
-            $(this).data("href", "http://addic7ed.com" + link.attr('href'));
+            $(this).data("href", link.attr('href'));
 
         var currentEpisode = parseInt($(this).find("td:nth-child(2)").text());
         if (currentEpisode == lastEpisode) {
@@ -139,7 +139,26 @@ function updateSidebar(seasons) {
 }
 
 function downloadClickListener() {
-    downloadURL($(this).data("href"));
+    var hiddenIFrameID = 'hiddenDownloader';
+    var iFrame = document.getElementById(hiddenIFrameID);
+
+    if (iFrame === null) {
+        iFrame = document.createElement('iframe');
+        iFrame.id = hiddenIFrameID;
+        iFrame.style.display = 'none';
+        document.body.appendChild(iFrame);
+    }
+
+    var name = getShowName(false) +
+        " S" + prepandZero($($(this).children()[0]).text()) +
+        "E" + prepandZero($($(this).children()[1]).text()) +
+        " " + $($(this).children()[2]).text() +
+        " " + $($(this).children()[4]).text() +
+        ".srt";
+
+    name = name.replace(/ /g, ".");
+
+    iFrame.src = $("#listBlock").data('src') + "&file=" + $(this).data("href") + "&name=" + name;
 }
 
 function pushbackLinkListener() {
@@ -147,18 +166,6 @@ function pushbackLinkListener() {
     loadHashToBlock();
     return false;
 }
-
-function downloadURL(url) {
-    var hiddenIFrameID = 'hiddenDownloader',
-        iframe = document.getElementById(hiddenIFrameID);
-    if (iframe === null) {
-        iframe = document.createElement('iframe');
-        iframe.id = hiddenIFrameID;
-        iframe.style.display = 'none';
-        document.body.appendChild(iframe);
-    }
-    iframe.src = url;
-};
 
 function getUrlParameter() {
     return window.location.pathname.replace(basePath + '/', "");
@@ -324,6 +331,13 @@ function indexOfShow(array, show) {
     }
 
     return -1;
+}
+
+function prepandZero(text) {
+    if (text < 10)
+        text = "0" + text;
+
+    return text;
 }
 
 $.fn.extend({

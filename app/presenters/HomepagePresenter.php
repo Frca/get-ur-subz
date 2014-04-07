@@ -117,4 +117,35 @@ class HomepagePresenter extends BasePresenter
 
         $this->sendPayload();
     }
+
+    public function handleGetSubtitle($file, $name)
+    {
+        $url = 'http://www.addic7ed.com' . $file;
+        $subData = CachedHttpRequest::load($this->getContext(), $url, 30 * CachedHttpRequest::MINUTE,
+            function($result, $c) {
+                list($header, $body) = explode("\r\n\r\n", $result, 2);
+                $headers = CachedHttpRequest::getHeaders($header);
+
+                $data = new stdClass();
+                $data->headers = array(
+                    "Content-Disposition" => $headers["Content-Disposition"],
+                    "Content-Type" => $headers["Content-Type"],
+                );
+                $data->file = $body;
+
+                return $data;
+            }, function($c) {
+                curl_setopt($c, CURLOPT_HEADER, 1);
+                curl_setopt($c, CURLOPT_HTTPHEADER, array("Referer: http://www.addic7ed.com"));
+            });
+
+        $response = $this->getHttpResponse();
+        if ($name)
+            $subData->headers["Content-Disposition"] = 'attachment; filename="' . $name . '"';
+
+        foreach($subData->headers as $name => $value)
+            $response->setHeader($name, $value);
+
+        $this->sendResponse(new \Nette\Application\Responses\TextResponse($subData->file));
+    }
 }
