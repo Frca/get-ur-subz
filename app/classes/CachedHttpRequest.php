@@ -28,13 +28,14 @@ class CachedHttpRequest {
             curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
             if ($modify_curl && is_callable($modify_curl))
                 $modify_curl($c);
+
             $html = curl_exec($c);
 
             if (curl_error($c)) {
                 $this->result = '';
                 $this->status = self::CURL_ERROR;
             } else {
-                $this->result = $modify_data && is_callable($modify_data) ? $modify_data($html) : $html;;
+                $this->result = $modify_data && is_callable($modify_data) ? $modify_data($html, $c) : $html;;
                 $this->status = self::DOWNLOADED;
 
                 $obj = new stdClass();
@@ -49,7 +50,7 @@ class CachedHttpRequest {
 
     public function getOutputResult()
     {
-        if ($this->result != self::CURL_ERROR)
+        if ($this->status != self::CURL_ERROR)
             return $this->result;
         else
             return false;
@@ -59,5 +60,22 @@ class CachedHttpRequest {
     {
         $request = new self($context, $url, $duration, $modify_data, $modify_curl);
         return $request->getOutputResult();
+    }
+
+    public static function getHeaders($headers)
+    {
+        if (!is_array($headers))
+            $headers = explode("\n", $headers);
+
+        $new_headers = array();
+        foreach ($headers as $key => $header) {
+            if (!$key)
+                continue;
+
+            list($key, $value) = explode(":", $header, 2);
+            $new_headers[$key] = $value;
+        }
+
+        return $new_headers;
     }
 }
