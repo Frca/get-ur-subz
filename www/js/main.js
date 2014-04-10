@@ -1,6 +1,26 @@
-var lastParameter = "";
+var lastParameter = undefined;
 var autocompleteData = null;
 var showsData = null;
+
+$.xhrPool = [];
+$.xhrPool.abortAll = function() {
+    $(this).each(function(idx, jqXHR) {
+        jqXHR.abort();
+    });
+    $.xhrPool.length = 0
+};
+
+$.ajaxSetup({
+    beforeSend: function(jqXHR) {
+        $.xhrPool.push(jqXHR);
+    },
+    complete: function(jqXHR) {
+        var index = $.xhrPool.indexOf(jqXHR);
+        if (index > -1) {
+            $.xhrPool.splice(index, 1);
+        }
+    }
+});
 
 $(function(){
     $("#input-only-english")
@@ -15,50 +35,55 @@ $(function(){
         .on("click", "#season tr", downloadClickListener )
         .on('click', 'a:not(.redirect)', pushbackLinkListener);
 
-    if (getUrlParameter())
-        loadHashToBlock();
+    loadHashToBlock();
 
     addShowAutocompleteListener($("#addShowInput"));
 
     loadShows();
 });
 
-function loadHashToBlock() {
-    if (!getUrlParameter())
+function loadHashToBlock(force) {
+    if (!force && lastParameter == getUrlParameter())
         return;
 
-    $("#listBlock").setLoading(true, 400, "Loading\u2026");
-    var season = getSeason();
-    if (season !== null) {
-        loadSubtitles(getShowId(), season);
-    }
+    $.xhrPool.abortAll();
+    if (getUrlParameter()) {
+        $("#listBlock").setLoading(true, 400, "Loading\u2026");
+        var season = getSeason();
+        if (season !== null) {
+            loadSubtitles(getShowId(), season);
+        }
 
-    if (!lastParameter || getShowId(lastParameter) != getShowId()) {
-        $("#seasonBlock").removeClass("hidden");
-        var seasonSelector = $("#seasonSelector");
-        seasonSelector.setLoading(true, 75);
-        $.ajax({
-            url: seasonSelector.data('src'),
-            data: { showId: getShowId() },
-            success: function (result) {
-                if (!result.error) {
-                    updateSidebar(result.seasons);
+        if (!lastParameter || getShowId(lastParameter) != getShowId()) {
+            $("#seasonBlock").removeClass("hidden");
+            var seasonSelector = $("#seasonSelector");
+            seasonSelector.setLoading(true, 75);
+            $.ajax({
+                url: seasonSelector.data('src'),
+                data: { showId: getShowId() },
+                success: function (result) {
+                    if (!result.error) {
+                        updateSidebar(result.seasons);
+                    }
+                    else {
+                        // TODO
+                    }
                 }
-                else {
-                    // TODO
+            });
+        } else {
+            var seasonBlocks = $("#seasonSelector > li");
+            seasonBlocks.removeClass("selected");
+            seasonBlocks.each(function() {
+                if (parseInt($(this).text()) == getSeason()) {
+                    $(this).addClass("selected");
+                    return false;
                 }
-            }
-        });
+                return true;
+            });
+        }
+
     } else {
-        var seasonBlocks = $("#seasonSelector > li");
-        seasonBlocks.removeClass("selected");
-        seasonBlocks.each(function() {
-            if (parseInt($(this).text()) == getSeason()) {
-                $(this).addClass("selected");
-                return false;
-            }
-            return true;
-        });
+        loadHomepage();
     }
 
     highlightCurrentShow();
@@ -70,10 +95,9 @@ function loadSubtitles(showId, season) {
     if (showId != getShowId || season != getSeason())
         window.history.pushState("", "", basePath + "/" + showId + "/" + season);
 
-    var subBlock = $("#subtitleBlock");
     var onlyEnglish = $("#input-only-english").is(":checked") ? 1 : 0;
     $.ajax({
-        url: subBlock.data('src'),
+        url: $("#subtitleBlock").data('src'),
         data: { showId: showId, season: season, english: onlyEnglish },
         success: function (result) {
             if (!result.error) {
@@ -86,6 +110,79 @@ function loadSubtitles(showId, season) {
     });
 }
 
+function loadHomepage() {
+    var currentShows = getShowsInCookies();
+    $("#seasonBlock").addClass("hidden");
+    var listBlock = $("#listBlock");
+    listBlock.setLoading(false);
+    $("<h3/>")
+        .text("Latest shows")
+        .appendTo(listBlock);
+
+    currentShows.forEach(function(value) {
+        var showId = getShowId(value);
+        var season = getSeason(value);
+        var showBlock = $("<div/>")
+            .addClass("showBlock");
+
+        $("<h4/>")
+            .addClass("show-"+showId)
+            .text(getShowName(false, showId))
+            .appendTo(showBlock);
+
+        var showData = $("<div/>")
+            .addClass("data")
+            .appendTo(showBlock);
+
+        showData.setLoading(true, 200);
+        showBlock.appendTo(listBlock);
+
+        var onlyEnglish = $("#input-only-english").is(":checked") ? 1 : 0;
+        $.ajax({
+            url: $("#subtitleBlock").data('src'),
+            data: { showId: showId, season: season, english: onlyEnglish },
+            success: function (result) {
+                if (!result.error) {
+                    onHomepageSubtitleLoaded(showData, result.data);
+                } else {
+                    // TODO
+                }
+            }
+        });
+    });
+}
+
+function onHomepageSubtitleLoaded(block, data) {
+    block
+        .setLoading(false)
+        .html(data);
+
+    fixSubtitleTable(block);
+
+    var highestEpisode = -1;
+    block.find("#season thead").addClass("hidden");
+    var rows = $(block.find("#season tbody").children());
+    var ignoreArray = [0, 99];
+    rows.removeClass("only-episode");
+    rows.each(function() {
+        var currentEp = parseInt($($(this).children()[1]).text());
+        if (ignoreArray.indexOf(currentEp) > -1)
+            return true;
+
+        if (currentEp > highestEpisode) {
+            rows.addClass("hidden");
+            rows.removeClass("only-episode");
+            $(this).addClass("only-episode");
+            highestEpisode = currentEp;
+        }
+
+        if (highestEpisode == currentEp)
+            $(this).removeClass("hidden");
+
+        return true;
+    });
+}
+
 function toggleLanguage() {
     if ($(this).is(":checked")) {
         $("#subtitleBlock").addClass("only-english");
@@ -93,10 +190,10 @@ function toggleLanguage() {
     }
     else {
         $("#subtitleBlock").removeClass("only-english");
-        $.removeCookie("only-english");
+        $.removeCookie("only-english", { path: basePath });
     }
 
-    loadHashToBlock();
+    loadHashToBlock(true);
 }
 
 function toggleOrder() {
@@ -104,25 +201,57 @@ function toggleOrder() {
         $.cookie("reverse-order", true, { expires: 30, path: basePath });
     }
     else {
-        $.removeCookie("reverse-order");
+        $.removeCookie("reverse-order", { path: basePath });
     }
 
-    loadHashToBlock();
+    var season = $("#listBlock #season");
+    if (season.length == 1)
+        fixSubtitleTable();
 }
 
 function updateSubtitles(data) {
-    $("#listBlock")
-        .setLoading(false)
-        .html('<h3>' + getShowName(true) + '</h3> <hr/>' + data);
+    var block = $("#listBlock")
+        .setLoading(false);
+
+    $("<h3/>")
+        .addClass("show-"+getShowId())
+        .text(getShowName(false))
+        .appendTo(block);
+
+    $("<h4/>")
+        .addClass("season-" + getSeason())
+        .text("Season " + getSeason())
+        .appendTo(block);
+
+    block.append(data)
+
+    fixSubtitleTable();
+
+    addCurrentToCookie();
+}
+
+function fixSubtitleTable(parent) {
+    if (!parent)
+        parent = $(document);
+
+    parent = parent.find("#season");
+    parent.find("input[type=hidden], td[align=left]").remove();
+
+    var table = parent.find("table");
+    table.addClass("table table-striped");
+    var tbody = table.find("tbody");
+    var revertToggled = $("#input-reverse-order").is(":checked");
+    if (revertToggled != tbody.hasClass("reverted")) {
+        tbody.reverseOrder();
+        tbody.toggleClass("reverted", revertToggled);
+    }
+
+    tbody.find("tr:not(.completed), tr[height]").remove();
 
     var lastEpisode = -1;
-    var table = $("#season > table");
-    table.addClass("table table-striped");
-    if ($("#input-reverse-order").is(":checked"))
-        table.find("tbody").reverseOrder();
-
-    table.find("tr[height]").remove();
-    table.find("tr:visible").each(function() {
+    var rows = table.find("tr:visible");
+    rows.removeClass("duplicate");
+    rows.each(function() {
         $(this).find("td:nth-child(3) > a").contents().unwrap();
         var link = $(this).find("td:nth-child(10) > a");
         if (link.length)
@@ -132,10 +261,8 @@ function updateSubtitles(data) {
         if (currentEpisode == lastEpisode) {
             $(this).addClass("duplicate");
         }
-
         lastEpisode = currentEpisode;
     });
-    addCurrentToCookie();
 }
 
 function updateSidebar(seasons) {
@@ -143,7 +270,7 @@ function updateSidebar(seasons) {
 
     var currentSeason = getSeason();
     if (currentSeason == null) {
-        var currentSeason = seasons[seasons.length -1];
+        currentSeason = seasons[seasons.length -1];
         loadSubtitles(getShowId(), currentSeason);
     }
 
@@ -224,9 +351,11 @@ function getSeason(parameter) {
     }
 }
 
-function getShowName(full) {
+function getShowName(full, showId) {
     var result = "Loading\u2026";
-    var showId = getShowId();
+    if (!showId)
+        showId = getShowId();
+
     if (showsData) {
         showsData.forEach(function(obj) {
             if (obj.value == showId) {
@@ -286,7 +415,6 @@ function addTVShow(id, showTitle) {
         url: $("#showAdder").data('src'),
         data: { showId: id, title: showTitle },
         success: function( data ) {
-            //if (data.status == "OK")
             loadShows(true);
             $("#addShowInput").val("");
         }
@@ -314,29 +442,26 @@ function loadShows(force) {
         });
 
         showsData.forEach(function(show) {
-            var item = $( "<li>" )
-                .append( '<a href="' + basePath + '/' + show.value + '">' + show.label + '</a>' );
+            $( "<li>" )
+                .append( '<a href="' + basePath + '/' + show.value + '">' + show.label + '</a>' )
+                .appendTo( navigator );
 
-            /*if (show.value == getShowId())
-                item.addClass("selected");*/
-
-            item.appendTo( navigator );
+            $(".show-"+show.value).text(show.label);
 
             var latestPos = indexOfShow(latestShows, show.value);
             if (latestPos != -1) {
-                item = $(latestBlock.children()[latestPos]);
+                var item = $(latestBlock.children()[latestPos]);
                 /* in Latest shows is current show always on top, no reason to highlight it */
                 /*if (show.value == getShowId())
                     item.addClass("selected");*/
 
+                $("#additionalNavigator").removeClass("hidden");
                 $('<a href="' + basePath + '/' + latestShows[latestPos] + '">S' + getSeason(latestShows[latestPos]) + ' | ' + show.label + '</a>')
                     .appendTo(item);
-                $("#additionalNavigator").removeClass("hidden");
             }
         });
 
         highlightCurrentShow();
-        $("#listBlock > h3").text(getShowName(true));
     });
 }
 
@@ -365,7 +490,10 @@ function addCurrentToCookie() {
 
     var currentShows = getShowsInCookies();
     var existingIdIdx = indexOfShow(currentShows, getShowId());
-    if (existingIdIdx != -1)
+    if (!existingIdIdx)
+        return;
+
+    if (existingIdIdx > 0)
         currentShows.splice(existingIdIdx, 1);
 
     currentShows.unshift(getShowId() + "/" + getSeason());
@@ -390,6 +518,21 @@ function prepandZero(text) {
         text = "0" + text;
 
     return text;
+}
+
+function highlightCurrentShow() {
+    var items = $("#navigatorMain > li");
+    if (items.length) {
+        items.removeClass("selected");
+        items.each(function() {
+            var showId = getShowId($($(this).children()[0]).attr('href'));
+            if (showId == getShowId()) {
+                $(this).addClass("selected");
+                return false;
+            }
+            return true;
+        });
+    }
 }
 
 $.fn.extend({
@@ -419,18 +562,3 @@ $.fn.extend({
         [].reverse.call(this.children()).appendTo(this);
     }
 });
-
-function highlightCurrentShow() {
-    var items = $("#navigatorMain > li");
-    if (items.length) {
-        items.removeClass("selected");
-        items.each(function() {
-            var showId = getShowId($($(this).children()[0]).attr('href'));
-            if (showId == getShowId()) {
-                $(this).addClass("selected");
-                return false;
-            }
-            return true;
-        });
-    }
-}

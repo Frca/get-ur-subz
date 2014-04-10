@@ -859,6 +859,10 @@ footer {
    border-top: 3px solid #ddd;
 }
 
+#season tr.only-episode > td {
+    border-top: 1px solid #ddd;
+}
+
 #season tr.duplicate > td:nth-child(2),
 #season tr.duplicate > td:nth-child(3) {
     overflow: hidden;
@@ -955,4 +959,13 @@ ul.ui-autocomplete > li.ui-menu-item:last-child {
     font-weight: bold;
     font-size: 1.2em;
     padding-bottom: 15px;
+}
+
+#listBlock > div.showBlock:not(:last-child) {
+    border-bottom: 1px solid #888;
+}
+
+.showBlock > h4 {
+    margin-top: 1em;
+    margin-bottom: 1em;
 }
