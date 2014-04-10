@@ -27,7 +27,6 @@ function loadHashToBlock() {
     if (!getUrlParameter())
         return;
 
-
     $("#listBlock").setLoading(true, 400, "Loading\u2026");
     var season = getSeason();
     if (season !== null) {
@@ -61,6 +60,8 @@ function loadHashToBlock() {
             return true;
         });
     }
+
+    highlightCurrentShow();
 
     lastParameter = getUrlParameter();
 }
@@ -112,7 +113,7 @@ function toggleOrder() {
 function updateSubtitles(data) {
     $("#listBlock")
         .setLoading(false)
-        .html('<h3>' + getShowName(true) + '</h3>' + data);
+        .html('<h3>' + getShowName(true) + '</h3> <hr/>' + data);
 
     var lastEpisode = -1;
     var table = $("#season > table");
@@ -193,6 +194,12 @@ function getUrlParameter() {
 function getShowId(parameter) {
     if (!parameter)
         parameter = getUrlParameter();
+
+    if (parameter.indexOf(basePath) == 0)
+        parameter = parameter.substr(basePath.length);
+
+    if (parameter.indexOf("/") == 0)
+        parameter = parameter.substr(1);
 
     return parameter.split('/')[0];
 }
@@ -307,17 +314,28 @@ function loadShows(force) {
         });
 
         showsData.forEach(function(show) {
-            $( "<li>" )
-                .append( '<a href="' + basePath + '/' + show.value + '">' + show.label + '</a>' )
-                .appendTo( navigator );
+            var item = $( "<li>" )
+                .append( '<a href="' + basePath + '/' + show.value + '">' + show.label + '</a>' );
+
+            /*if (show.value == getShowId())
+                item.addClass("selected");*/
+
+            item.appendTo( navigator );
 
             var latestPos = indexOfShow(latestShows, show.value);
             if (latestPos != -1) {
-                $('<a href="' + basePath + '/' + latestShows[latestPos] + '">S' + getSeason(latestShows[latestPos]) + ' | ' + show.label + '</a>').appendTo(latestBlock.children()[latestPos]);
+                item = $(latestBlock.children()[latestPos]);
+                /* in Latest shows is current show always on top, no reason to highlight it */
+                /*if (show.value == getShowId())
+                    item.addClass("selected");*/
+
+                $('<a href="' + basePath + '/' + latestShows[latestPos] + '">S' + getSeason(latestShows[latestPos]) + ' | ' + show.label + '</a>')
+                    .appendTo(item);
                 $("#additionalNavigator").removeClass("hidden");
             }
         });
 
+        highlightCurrentShow();
         $("#listBlock > h3").text(getShowName(true));
     });
 }
@@ -401,3 +419,18 @@ $.fn.extend({
         [].reverse.call(this.children()).appendTo(this);
     }
 });
+
+function highlightCurrentShow() {
+    var items = $("#navigatorMain > li");
+    if (items.length) {
+        items.removeClass("selected");
+        items.each(function() {
+            var showId = getShowId($($(this).children()[0]).attr('href'));
+            if (showId == getShowId()) {
+                $(this).addClass("selected");
+                return false;
+            }
+            return true;
+        });
+    }
+}
