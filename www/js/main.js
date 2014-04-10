@@ -32,7 +32,7 @@ $(function(){
         .prop('checked', $.cookie("reverse-order"));
 
     $( document )
-        .on("click", "#season tr", downloadClickListener )
+        .on("click", ".subtitles tr", downloadClickListener )
         .on('click', 'a:not(.redirect)', pushbackLinkListener);
 
     loadHashToBlock();
@@ -126,8 +126,13 @@ function loadHomepage() {
             .addClass("showBlock");
 
         $("<h4/>")
-            .addClass("show-"+showId)
+            .addClass("show-" + showId)
             .text(getShowName(false, showId))
+            .appendTo(showBlock);
+
+        $("<h6/>")
+            .addClass("season-" + season)
+            .text("Season " + season, season)
             .appendTo(showBlock);
 
         var showData = $("<div/>")
@@ -153,15 +158,17 @@ function loadHomepage() {
 }
 
 function onHomepageSubtitleLoaded(block, data) {
+    data = $(data).find("#season > table");
+
     block
         .setLoading(false)
         .html(data);
 
-    fixSubtitleTable(block);
+    fixSubtitleTable(data);
 
     var highestEpisode = -1;
-    block.find("#season thead").addClass("hidden");
-    var rows = $(block.find("#season tbody").children());
+    block.find(".subtitles thead").addClass("hidden");
+    var rows = $(block.find(".subtitles tbody").children());
     var ignoreArray = [0, 99];
     rows.removeClass("only-episode");
     rows.each(function() {
@@ -204,7 +211,7 @@ function toggleOrder() {
         $.removeCookie("reverse-order", { path: basePath });
     }
 
-    var season = $("#listBlock #season");
+    var season = $("#listBlock .subtitles");
     if (season.length == 1)
         fixSubtitleTable();
 }
@@ -223,22 +230,15 @@ function updateSubtitles(data) {
         .text("Season " + getSeason())
         .appendTo(block);
 
-    block.append(data)
-
-    fixSubtitleTable();
+    var table = $(data).find("#season > table");
+    block.append(table);
+    fixSubtitleTable(table);
 
     addCurrentToCookie();
 }
 
-function fixSubtitleTable(parent) {
-    if (!parent)
-        parent = $(document);
-
-    parent = parent.find("#season");
-    parent.find("input[type=hidden], td[align=left]").remove();
-
-    var table = parent.find("table");
-    table.addClass("table table-striped");
+function fixSubtitleTable(table) {
+    table.addClass("table table-striped subtitles");
     var tbody = table.find("tbody");
     var revertToggled = $("#input-reverse-order").is(":checked");
     if (revertToggled != tbody.hasClass("reverted")) {

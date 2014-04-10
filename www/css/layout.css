@@ -836,44 +836,44 @@ footer {
     width: 100%;
 }
 
-#listBlock #season th:first-child,
-#listBlock #season td:first-child,
-#listBlock #season th:last-child,
-#listBlock #season td:last-child,
-#listBlock #season th:nth-child(6),
-#listBlock #season td:nth-child(6),
-#listBlock #season th:nth-child(10),
-#listBlock #season td:nth-child(10),
-#subtitleBlock.only-english #listBlock #season table th:nth-child(4),
-#subtitleBlock.only-english #listBlock #season table td:nth-child(4),
-#listBlock #season tr[height="2"],
-#listBlock #season td[colspan]{
+table.subtitles th:first-child,
+table.subtitles td:first-child,
+table.subtitles th:last-child,
+table.subtitles td:last-child,
+table.subtitles th:nth-child(6),
+table.subtitles td:nth-child(6),
+table.subtitles th:nth-child(10),
+table.subtitles td:nth-child(10),
+#subtitleBlock.only-english table.subtitles th:nth-child(4),
+#subtitleBlock.only-english table.subtitles td:nth-child(4),
+table.subtitles tr[height],
+table.subtitles td[colspan]{
     display: none;
 }
 
-#listBlock #season table th {
+table.subtitles  th {
     text-align: center;
 }
 
-#season tr:not(.duplicate) > td {
+table.subtitles tr:not(.duplicate) > td {
    border-top: 3px solid #ddd;
 }
 
-#season tr.only-episode > td {
+table.subtitles tr.only-episode > td {
     border-top: 1px solid #ddd;
 }
 
-#season tr.duplicate > td:nth-child(2),
-#season tr.duplicate > td:nth-child(3) {
+table.subtitles tr.duplicate > td:nth-child(2),
+table.subtitles tr.duplicate > td:nth-child(3) {
     overflow: hidden;
     text-indent: -9999px;
 }
 
-#season tr {
+table.subtitles tr {
     cursor: pointer;
 }
 
-#season tr:hover > td {
+table.table.subtitles tr:hover > td {
     background: #e3e3e3;
 }
 
