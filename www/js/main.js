@@ -13,7 +13,7 @@ $(function(){
 
     $( document )
         .on("click", "#season tr", downloadClickListener )
-        .on('click', '#navigatorBlock a, #seasonSelector a', pushbackLinkListener);
+        .on('click', 'a:not(.redirect)', pushbackLinkListener);
 
     if (getUrlParameter())
         loadHashToBlock();
