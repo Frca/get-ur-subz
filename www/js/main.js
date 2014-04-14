@@ -374,7 +374,9 @@ function getShowName(full, showId) {
 function addShowAutocompleteListener(object) {
     object.autocomplete({
         source: function(request, response) {
+            object.addClass("loading");
             getAutocompleteData(function() {
+                object.removeClass("loading");
                 response( $.ui.autocomplete.filter(autocompleteData, request.term ) );
             });
         },

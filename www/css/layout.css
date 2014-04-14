@@ -969,3 +969,8 @@ ul.ui-autocomplete > li.ui-menu-item:last-child {
     margin-top: 1em;
     margin-bottom: 1em;
 }
+
+#addShowInput.loading {
+    background: url('../images/loading.gif') no-repeat 97% #fff;
+    background-size: 20px;
+}
