@@ -133,6 +133,12 @@ function loadHomepage() {
         .text("Latest shows")
         .appendTo(listBlock);
 
+    if (currentShows.length == 0) {
+        $("<p/>")
+            .text("You have not visited any shows yet.")
+            .appendTo(listBlock);
+        return;
+    }
     currentShows.forEach(function(value) {
         var showId = getShowId(value);
         var season = getSeason(value);
