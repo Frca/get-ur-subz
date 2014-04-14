@@ -139,9 +139,13 @@ function loadHomepage() {
         var showBlock = $("<div/>")
             .addClass("showBlock");
 
-        $("<h4/>")
-            .addClass("show-" + showId)
-            .text(getShowName(false, showId))
+        $("<a/>")
+            .attr("href", basePath + "/" +  showId + "/" + season)
+            .append(
+                $("<h4/>")
+                    .addClass("show-" + showId)
+                    .text(getShowName(false, showId))
+            )
             .appendTo(showBlock);
 
         $("<h6/>")
