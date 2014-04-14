@@ -54,3 +54,8 @@
     </div>
 
 {/block}
+
+{block #scripts}
+    {include #parent}
+    <script src="{$basePath}/js/main.js"></script>
+{/block}
