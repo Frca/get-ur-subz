@@ -10,15 +10,29 @@ $.xhrPool.abortAll = function() {
     $.xhrPool.length = 0
 };
 
+$.xhrPool.abortAllShowRelated = function() {
+    $(this).each(function(idx, value) {
+        if (value.type == "data" ||
+            value.type == "getSeasonCount") {
+            value.xhr.abort();
+            $(this).splice(idx, 1);
+        }
+    });
+}
+
 $.ajaxSetup({
-    beforeSend: function(jqXHR) {
-        $.xhrPool.push(jqXHR);
+    beforeSend: function(jqXHR, settings) {
+        $.xhrPool.push({ type: getUrlGetParameter("do", settings.url), xhr: jqXHR });
     },
     complete: function(jqXHR) {
-        var index = $.xhrPool.indexOf(jqXHR);
-        if (index > -1) {
-            $.xhrPool.splice(index, 1);
-        }
+        $.each($.xhrPool, function(idx, value) {
+            if (value && jqXHR == value.xhr) {
+                $.xhrPool.splice(idx, 1);
+                return false;
+            }
+
+            return true;
+        });
     }
 });
 
@@ -46,7 +60,7 @@ function loadHashToBlock(force) {
     if (!force && lastParameter == getUrlParameter())
         return;
 
-    $.xhrPool.abortAll();
+    $.xhrPool.abortAllShowRelated();
     if (getUrlParameter()) {
         $("#listBlock").setLoading(true, 400, "Loading\u2026");
         var season = getSeason();
@@ -535,6 +549,24 @@ function highlightCurrentShow() {
             return true;
         });
     }
+}
+
+function getUrlGetParameter(key, url) {
+    if (!url)
+        url = window.location.pathname;
+
+    var params = url.substr(url.indexOf("?") + 1).split("&");
+    var value = undefined;
+    $.each(params, function(idx, param) {
+        if (param.indexOf(key + "=") == 0) {
+            value = param.substr(param.indexOf("=") + 1);
+            return false;
+        }
+        return true;
+    });
+
+    return value;
+
 }
 
 $.fn.extend({
