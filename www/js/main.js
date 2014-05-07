@@ -333,7 +333,7 @@ function downloadClickListener() {
     if (name)
         name += "&name=" + name
 
-    window.open(url);
+    window.location = url;
 }
 
 function pushbackLinkListener() {
