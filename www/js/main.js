@@ -64,7 +64,7 @@ function loadHashToBlock(force) {
     if (getUrlParameter()) {
         $("#listBlock").setLoading(true, 400, "Loading\u2026");
         var season = getSeason();
-        if (season !== null) {
+        if (season) {
             loadSubtitles(getShowId(), season);
         }
 
@@ -511,7 +511,8 @@ function getShowsInCookies() {
 }
 
 function addCurrentToCookie() {
-    if (getSeason() === null)
+    var season = getSeason();
+    if (season === null || typeof season === 'undefined')
         return;
 
     var currentShows = getShowsInCookies();
@@ -522,7 +523,7 @@ function addCurrentToCookie() {
     if (existingIdIdx > 0)
         currentShows.splice(existingIdIdx, 1);
 
-    currentShows.unshift(getShowId() + "/" + getSeason());
+    currentShows.unshift(getShowId() + "/" + season);
 
     $.cookie("shows", currentShows, { expires: 30, path: basePath });
     loadShows();
