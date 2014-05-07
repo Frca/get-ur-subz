@@ -237,7 +237,7 @@ function toggleOrder() {
 
     var season = $("#listBlock .subtitles");
     if (season.length == 1)
-        fixSubtitleTable();
+        fixSubtitleTable(season);
 }
 
 function updateSubtitles(data) {
