@@ -145,12 +145,15 @@ function loadHomepage() {
         var showBlock = $("<div/>")
             .addClass("showBlock");
 
+        var showName = getShowName(false, showId);
+        if (!showName)
+            showName = "Loading\u2026";
         $("<a/>")
             .attr("href", basePath + "/" +  showId + "/" + season)
             .append(
                 $("<h4/>")
                     .addClass("show-" + showId)
-                    .text(getShowName(false, showId))
+                    .text(showName)
             )
             .appendTo(showBlock);
 
@@ -244,9 +247,13 @@ function updateSubtitles(data) {
     var block = $("#listBlock")
         .setLoading(false);
 
+    var showName = getShowName(false);
+    if (!showName)
+        showName = "Loading\u2026";
+
     $("<h3/>")
         .addClass("show-"+getShowId())
-        .text(getShowName(false))
+        .text(showName)
         .appendTo(block);
 
     $("<h4/>")
@@ -310,26 +317,23 @@ function updateSidebar(seasons) {
 }
 
 function downloadClickListener() {
-    var hiddenIFrameID = 'hiddenDownloader';
-    var iFrame = document.getElementById(hiddenIFrameID);
-
-    if (iFrame === null) {
-        iFrame = document.createElement('iframe');
-        iFrame.id = hiddenIFrameID;
-        iFrame.style.display = 'none';
-        document.body.appendChild(iFrame);
+    var name = getShowName(false);
+    if (name) {
+        name = (
+            name +
+            " S" + prepandZero($($(this).children()[0]).text()) +
+            "E" + prepandZero($($(this).children()[1]).text()) +
+            " " + $($(this).children()[2]).text() +
+            " " + $($(this).children()[4]).text() +
+            ".srt"
+        ).replace(/ /g, ".");
     }
 
-    var name = getShowName(false) +
-        " S" + prepandZero($($(this).children()[0]).text()) +
-        "E" + prepandZero($($(this).children()[1]).text()) +
-        " " + $($(this).children()[2]).text() +
-        " " + $($(this).children()[4]).text() +
-        ".srt";
+    var url = $("#listBlock").data('src') + "&file=" + $(this).data("href");
+    if (name)
+        name += "&name=" + name
 
-    name = name.replace(/ /g, ".");
-
-    iFrame.src = $("#listBlock").data('src') + "&file=" + $(this).data("href") + "&name=" + name;
+    window.open(url);
 }
 
 function pushbackLinkListener() {
@@ -376,7 +380,7 @@ function getSeason(parameter) {
 }
 
 function getShowName(full, showId) {
-    var result = "Loading\u2026";
+    var result = null;
     if (!showId)
         showId = getShowId();
 
