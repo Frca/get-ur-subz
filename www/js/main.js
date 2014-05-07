@@ -331,7 +331,7 @@ function downloadClickListener() {
 
     var url = $("#listBlock").data('src') + "&file=" + $(this).data("href");
     if (name)
-        name += "&name=" + name
+        url += "&name=" + name;
 
     window.location = url;
 }
