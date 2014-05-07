@@ -128,12 +128,10 @@ class HomepagePresenter extends BasePresenter
 
                 $data = new stdClass();
                 $data->headers = array(
-                    "Content-Disposition" => $headers["Content-Disposition"],
+                    "Content-Disposition" => $name ? 'attachment; filename="' . $name . '"' : $headers["Content-Disposition"],
                     "Content-Type" => $headers["Content-Type"],
                 );
 
-                if ($name)
-                    $data->headers["Content-Disposition"] = 'attachment; filename="' . $name . '"';
                 $data->file = $body;
 
                 return $data;
