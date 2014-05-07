@@ -122,7 +122,7 @@ class HomepagePresenter extends BasePresenter
     {
         $url = 'http://www.addic7ed.com' . $file;
         $subData = CachedHttpRequest::load($this->getContext(), $url, 30 * CachedHttpRequest::MINUTE,
-            function($result, $c) {
+            function($result, $c) use ($name) {
                 list($header, $body) = explode("\r\n\r\n", $result, 2);
                 $headers = CachedHttpRequest::getHeaders($header);
 
@@ -131,6 +131,9 @@ class HomepagePresenter extends BasePresenter
                     "Content-Disposition" => $headers["Content-Disposition"],
                     "Content-Type" => $headers["Content-Type"],
                 );
+
+                if ($name)
+                    $data->headers["Content-Disposition"] = 'attachment; filename="' . $name . '"';
                 $data->file = $body;
 
                 return $data;
@@ -140,8 +143,6 @@ class HomepagePresenter extends BasePresenter
             });
 
         $response = $this->getHttpResponse();
-        if ($name)
-            $subData->headers["Content-Disposition"] = 'attachment; filename="' . $name . '"';
 
         foreach($subData->headers as $name => $value)
             $response->setHeader($name, $value);
