@@ -521,10 +521,8 @@ function addCurrentToCookie() {
 
     var currentShows = getShowsInCookies();
     var existingIdIdx = indexOfShow(currentShows, getShowId());
-    if (!existingIdIdx)
-        return;
 
-    if (existingIdIdx > 0)
+    if (existingIdIdx >= 0)
         currentShows.splice(existingIdIdx, 1);
 
     currentShows.unshift(getShowId() + "/" + season);
