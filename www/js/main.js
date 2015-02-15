@@ -550,10 +550,10 @@ function prepandZero(text) {
 }
 
 function highlightCurrentShow() {
-    var items = $("#navigatorMain > li");
-    if (items.length) {
-        items.removeClass("selected");
-        items.each(function() {
+    var $items = $("#navigatorMain > li");
+    if ($items.length) {
+        $items.removeClass("selected");
+        $items.each(function() {
             var showId = getShowId($($(this).children()[0]).attr('href'));
             if (showId == getShowId()) {
                 $(this).addClass("selected");
