@@ -220,11 +220,11 @@ function onHomepageSubtitleLoaded(block, data) {
 function toggleLanguage() {
     if ($(this).is(":checked")) {
         $("#subtitleBlock").addClass("only-english");
-        $.cookie("only-english", true, { expires: 30, path: basePath});
+        $.cookie("only-english", true, { expires: 30, path: basePath + "/"});
     }
     else {
         $("#subtitleBlock").removeClass("only-english");
-        $.removeCookie("only-english", { path: basePath });
+        $.removeCookie("only-english", { path: basePath + "/"});
     }
 
     loadHashToBlock(true);
@@ -232,10 +232,10 @@ function toggleLanguage() {
 
 function toggleOrder() {
     if ($(this).is(":checked")) {
-        $.cookie("reverse-order", true, { expires: 30, path: basePath });
+        $.cookie("reverse-order", true, { expires: 30, path: basePath + "/"});
     }
     else {
-        $.removeCookie("reverse-order", { path: basePath });
+        $.removeCookie("reverse-order", { path: basePath + "/"});
     }
 
     var season = $("#listBlock .subtitles");
@@ -527,7 +527,7 @@ function addCurrentToCookie() {
 
     currentShows.unshift(getShowId() + "/" + season);
 
-    $.cookie("shows", currentShows, { expires: 30, path: basePath });
+    $.cookie("shows", currentShows, { expires: 30, path: basePath + "/"});
     loadShows();
 }
 
